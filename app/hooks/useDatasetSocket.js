@@ -150,61 +150,60 @@ export function useDatasetSocket(dsName, dsView, user, tabulatorRef, options = {
     socket.on('unlocked', (unlockedObj) => {
       if (!tabulatorRef.current || unlockedObj.dsName !== dsName) return;
       
-      setLockedCells(prev => {
-        const newLocked = { ...prev };
-        if (newLocked[unlockedObj._id] && newLocked[unlockedObj._id][unlockedObj.field]) {
-          const cell = newLocked[unlockedObj._id][unlockedObj.field];
-          delete newLocked[unlockedObj._id][unlockedObj.field];
-          
-          // Also delete from ref synchronously
-          if (lockedCellsRef.current[unlockedObj._id]) {
-            delete lockedCellsRef.current[unlockedObj._id][unlockedObj.field];
-          }
-          
-          // CRITICAL FIX: Blur the cell if it has focus to prevent auto-edit on unlock
-          try {
-            const cellElement = cell.getElement();
-            if (cellElement && document.activeElement === cellElement) {
-              cellElement.blur();
-              console.log('[Socket unlocked] Blurred cell to prevent auto-edit after unlock');
+      // Check if this cell was tracked in our locked cells
+      const wasLocked = lockedCellsRef.current[unlockedObj._id] && lockedCellsRef.current[unlockedObj._id][unlockedObj.field];
+      
+      if (wasLocked) {
+        const cell = lockedCellsRef.current[unlockedObj._id][unlockedObj.field];
+        
+        // Delete from ref (synchronous)
+        delete lockedCellsRef.current[unlockedObj._id][unlockedObj.field];
+        
+        // Delete from state (async)
+        setLockedCells(prev => {
+          const newLocked = { ...prev };
+          if (newLocked[unlockedObj._id]) {
+            delete newLocked[unlockedObj._id][unlockedObj.field];
+            // Only delete parent object if no more fields are locked
+            if (Object.keys(newLocked[unlockedObj._id]).length === 0) {
+              delete newLocked[unlockedObj._id];
             }
-          } catch (blurError) {
-            console.warn('[Socket unlocked] Could not blur cell:', blurError);
           }
-          
-          // Clear background and re-apply formatter BEFORE updateData
-          // (updateData will recreate the cell, making current reference stale)
-          cell.getElement().style.backgroundColor = '';
-          const colDef = cell.getColumn().getDefinition();
-          if (colDef.formatter) {
-            colDef.formatter(cell, colDef.formatterParams);
-          }
-          
-          // Update cell value if provided (after clearing styling)
-          if (unlockedObj.newVal !== undefined && unlockedObj.newVal !== null) {
-            const update = { _id: unlockedObj._id, [unlockedObj.field]: unlockedObj.newVal };
-            
-            // CRITICAL FIX: Temporarily disable cell editor before updateData to prevent
-            // automatic entry into edit mode when cell is unlocked
-            const originalEditor = colDef.editor;
-            colDef.editor = false;
-            
-            tabulatorRef.current.table.updateData([update]);
-            
-            // Restore editor after updateData completes
-            // Use setTimeout to ensure updateData has fully processed
-            setTimeout(() => {
-              colDef.editor = originalEditor;
-            }, 0);
-          }
+          return newLocked;
+        });
+        
+        // Update cell value if provided
+        if (unlockedObj.newVal !== undefined && unlockedObj.newVal !== null) {
+          // Use cell.setValue() directly since we already have the cell reference
+          cell.setValue(unlockedObj.newVal);
+        }
+        
+        // Clear background and re-apply formatter
+        cell.getElement().style.backgroundColor = '';
+        const colDef = cell.getColumn().getDefinition();
+        if (colDef.formatter) {
+          colDef.formatter(cell, colDef.formatterParams);
+        }
+        
+        // Callback for additional processing
+        if (onCellUnlocked) {
+          onCellUnlocked(unlockedObj);
+        }
+      } else if (unlockedObj.newVal !== undefined && unlockedObj.newVal !== null) {
+        // Handle cells not in lockedCells but still need data update
+        // This happens when user joins late or page was refreshed
+        const rows = tabulatorRef.current.table.searchRows("_id", "=", unlockedObj._id);
+        
+        if (rows.length > 0) {
+          const update = { _id: unlockedObj._id, [unlockedObj.field]: unlockedObj.newVal };
+          tabulatorRef.current.table.updateData([update]);
           
           // Callback for additional processing
           if (onCellUnlocked) {
             onCellUnlocked(unlockedObj);
           }
         }
-        return newLocked;
-      });
+      }
     });
 
     socket.on('exception', (msg) => {
