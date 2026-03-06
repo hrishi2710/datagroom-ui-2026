@@ -367,6 +367,10 @@ export default function createTabulatorConfig(context) {
           // This ensures Mermaid diagrams are always fresh .mermaid divs, just like PlantUML returns fresh <img> tags
           value = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
           value = md.render(value);
+          // Margin-bottom is a funky hack to make sure the cells are dense. 
+          // We can't change it. But in some scenarios, there is a bit of 
+          // clipping at the bottom because of this. We need to find a way to
+          // solve this. 
           //const html = `<div style="white-space:normal;word-wrap:break-word;margin-bottom:-12px;width:${width - 8}px;height:200px;overflow-x:auto; overflow-y:auto">${value}</div>`;
           const html = `<div style="white-space:normal;word-wrap:break-word;margin-bottom:-12px;overflow-x:auto;overflow-y:auto;width:${width - 8}px">${value}</div>`;
           
