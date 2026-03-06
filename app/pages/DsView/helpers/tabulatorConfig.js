@@ -368,7 +368,7 @@ export default function createTabulatorConfig(context) {
           value = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
           value = md.render(value);
           //const html = `<div style="white-space:normal;word-wrap:break-word;margin-bottom:-12px;width:${width - 8}px;height:200px;overflow-x:auto; overflow-y:auto">${value}</div>`;
-          const html = `<div style="white-space:normal;word-wrap:break-word;margin-bottom:-12px;width:${width - 8}px">${value}</div>`;
+          const html = `<div style="white-space:normal;word-wrap:break-word;padding-bottom:8px;width:${width - 8}px">${value}</div>`;
           
           return html;
         };
