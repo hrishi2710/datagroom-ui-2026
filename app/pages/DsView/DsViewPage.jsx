@@ -32,6 +32,7 @@ import useRefreshJira from '../../hooks/useRefreshJira';
 // Components
 import MyTabulator from '../../components/MyTabulator';
 import Notification from '../../components/Notification';
+import ControlPanel from './components/ControlPanel.jsx';
 import FilterControls from './components/FilterControls.jsx';
 import Modal from './components/Modal.jsx';
 import ModalEditor from './components/ModalEditor.jsx';
@@ -2845,6 +2846,11 @@ function DsViewPage() {
             </h2>
           </div>
 
+          {/* Two-column layout: Description on left, Control Panel on right */}
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           {/* Dataset Description - Reference: DsView.js lines 276-287 */}
           {(() => {
             try {
@@ -2860,104 +2866,26 @@ function DsViewPage() {
             }
             return null;
           })()}
+        </Col>
+      </Row>
+      <Row className={styles.controlRow}>
+        <Col xs={12} lg={7}>
+          {/* Left side: FilterControls and Data bar */}
+          <div className={styles.leftPanel}>
+            {/* FilterControls component */}
+            <FilterControls
+              show={showAllFilters}
+              dsName={dsName}
+              dsView={dsView}
+              userId={userId}
+              tableRef={tabulatorRef.current}
+              onFilterChange={processFilterChange}
+              defaultValue={filter}
+              viewConfig={viewConfig}
+            />
 
-          {/* Action buttons */}
-          <div className={styles.actionBar}>
-            <button className={styles.btnLink} onClick={handleCopyToClipboard}>
-              <i className='fas fa-clipboard'></i> Copy-to-clipboard
-            </button>
-            <span>|</span>
-            <button className={styles.btnLink} onClick={handleAddRow}>
-              <i className='fas fa-plus'></i> Add Row
-            </button>
-            {/* Refresh Jira button - Reference: DsView.js lines 2150-2161 */}
-            {(() => {
-              try {
-                if ((viewConfig?.jiraConfig?.jira) || (viewConfig?.jiraAgileConfig?.jira)) {
-                  return (
-                    <>
-                      <span>|</span>
-                      <button 
-                        className={styles.btnLink} 
-                        onClick={handleRefreshJira}
-                        disabled={refreshJiraMutation.isPending}
-                      >
-                        <i className='fas fa-redo'></i> Refresh Jira
-                      </button>
-                    </>
-                  );
-                }
-              } catch (e) {}
-              return null;
-            })()}
-          </div>
-
-          {/* Settings checkboxes */}
-          <div className={styles.settingsBar}>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={chronologyDescending}
-                onChange={(e) => {
-                  setChronologyDescending(e.target.checked);
-                  localStorage.setItem('chronologyDescending', JSON.stringify(e.target.checked));
-                  setForceRefresh(prev => prev + 1); // Increment counter to trigger table refresh
-                }}
-              />
-              Desc order <i className='fas fa-level-down-alt'></i>
-            </label>
-            <span>|</span>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={showAllFilters}
-                onChange={(e) => {
-                  setShowAllFilters(e.target.checked);
-                  localStorage.setItem('showAllFilters', JSON.stringify(e.target.checked));
-                }}
-              />
-              Show filters <i className='fas fa-filter'></i>
-            </label>
-            <span>|</span>
-            <label className={styles.checkboxLabel}>
-              <input 
-                type="checkbox" 
-                checked={singleClickEdit} 
-                onChange={handleSingleClickEditToggle}
-              />
-              &nbsp;1-click editing <i className='fas fa-bolt'></i>
-            </label>
-            <span>|</span>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={disableEditing}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  disableEditingRef.current = checked; // Sync ref
-                  setDisableEditing(checked);
-                  localStorage.setItem('disableEditing', JSON.stringify(checked));
-                  toggleEditing(checked);
-                }}
-              />
-              Disable Editing <i className='fas fa-ban'></i>
-            </label>
-          </div>
-
-          {/* FilterControls component */}
-          <FilterControls
-            show={showAllFilters}
-            dsName={dsName}
-            dsView={dsView}
-            userId={userId}
-            tableRef={tabulatorRef.current}
-            onFilterChange={processFilterChange}
-            defaultValue={filter}
-            viewConfig={viewConfig}
-          />
-
-          {/* Total records display */}
-          <div className={styles.infoBar}>
+            {/* Data bar - minimal info above table */}
+            <div className={styles.dataBar}>
             {tabulatorRef.current?.table?.getHeaderFilters()?.length > 0 ? (
               fetchAllMatchingRecords ? (
                 <b className={styles.totalCount}><i className={`fas fa-clone ${styles.totalIcon}`}></i> Total matching records: {totalRecs}</b>
@@ -2981,30 +2909,40 @@ function DsViewPage() {
                 </button>
               </>
             )}
-            
-            <span>|</span>
-            <Link to={`/dsEditLog/${dsName}`} target="_blank" className="btn btn-link">
-              <i className='fas fa-file-alt'></i> <b>Edit-log</b>
-            </Link>
-            <span>|</span>
-            <Link to={`/dsViewEdit/${dsName}/${dsView}`} target="_blank" className="btn btn-link">
-              <i className='fas fa-edit'></i> <b>Edit-view</b>
-            </Link>
-            <span>|</span>
-            <Link to={`/dsBulkEdit/${dsName}`} target="_blank" className="btn btn-link">
-              <i className='fas fa-edit'></i> <b>Bulk-edit</b>
-            </Link>
-            <span>|</span>
-            <Link to={`/dsAttachments/${dsName}`} target="_blank" className="btn btn-link">
-              <i className='fas fa-file-alt'></i> <b>Attachments</b>
-            </Link>
             <span>|</span>
             {displayConnectedStatus()}
             <button className="btn btn-link" onClick={() => tabulatorRef.current?.table?.setData()}>
               <i className='fas fa-redo'></i><b className={styles.refreshLabel}>Refresh</b>
             </button>
           </div>
-
+          </div>
+        </Col>
+        <Col xs={12} lg={5}>
+          {/* Right side: Control Panel */}
+          <ControlPanel
+            chronologyDescending={chronologyDescending}
+            setChronologyDescending={setChronologyDescending}
+            showAllFilters={showAllFilters}
+            setShowAllFilters={setShowAllFilters}
+            singleClickEdit={singleClickEdit}
+            handleSingleClickEditToggle={handleSingleClickEditToggle}
+            disableEditing={disableEditing}
+            disableEditingRef={disableEditingRef}
+            setDisableEditing={setDisableEditing}
+            toggleEditing={toggleEditing}
+            setForceRefresh={setForceRefresh}
+            handleAddRow={handleAddRow}
+            handleRefreshJira={handleRefreshJira}
+            handleCopyToClipboard={handleCopyToClipboard}
+            refreshJiraMutation={refreshJiraMutation}
+            dsName={dsName}
+            dsView={dsView}
+            viewConfig={viewConfig}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           {initialUrlProcessed && (
           <MyTabulator
             innerref={(ref) => (tabulatorRef.current = ref)}

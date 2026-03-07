@@ -54,6 +54,20 @@
   padding: 0;
 }
 
+/* Left panel container for filters and data bar */
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px;
+  margin-bottom: 12px;
+}
+
+/* Row containing controls above the table */
+.controlRow {
+  margin-bottom: 12px;
+}
+
 .btnLink {
   background: none;
   border: none;
@@ -207,6 +221,92 @@
 }
 
 .infoBar :global(.btn-link):hover {
+  color: var(--color-text);
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+/* Data bar - minimal info above table (total records, fetch toggle, refresh) */
+.dataBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  flex-wrap: wrap;
+  font-size: var(--info-main-size, 1.45rem);
+  --info-main-size: 1.45rem;
+  padding: 16px 0 0 0;
+  margin-top: auto;
+}
+
+.dataBar .totalCount {
+  font-size: var(--info-main-size);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dataBar .totalIcon {
+  font-size: var(--info-main-size);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Ensure controls inside dataBar align vertically and buttons match spacing */
+.dataBar > * {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dataBar .btnLink {
+  padding: 6px 10px;
+  font-size: var(--info-main-size);
+  line-height: 1;
+}
+
+.dataBar .separator {
+  margin: 0 6px;
+  line-height: 1;
+}
+
+.dataBar .btnLink i {
+  font-size: var(--info-main-size);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Style Bootstrap btn-link used in this area to match Total records sizing/alignment */
+.dataBar :global(.btn-link) {
+  padding: 0 6px;
+  font-size: var(--info-main-size);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.dataBar :global(.btn-link) i {
+  font-size: var(--info-main-size);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.dataBar .refreshLabel {
+  font-size: var(--info-main-size);
+  font-weight: 700;
+  line-height: 1;
+  margin-left: 2px;
+}
+
+.dataBar :global(.btn-link) i,
+.dataBar .refreshLabel {
+  position: relative;
+  top: 2px;
+}
+
+.dataBar :global(.btn-link):hover {
   color: var(--color-text);
   text-decoration: none;
   opacity: 0.9;

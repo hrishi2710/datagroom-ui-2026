@@ -1,0 +1,205 @@
+/* ControlPanel Component Styles */
+
+.controlPanel {
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  min-height: 200px;
+}
+
+/* Top Row: Grid layout for Settings, Quick Actions, and Navigation */
+.topRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Section Styles */
+.panelSection {
+  padding: 0;
+  border-bottom: none;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.sectionHeader i {
+  font-size: 1.45rem;
+  opacity: 0.8;
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+/* Settings Section - Checkboxes */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.05rem;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.checkboxLabel i {
+  font-size: 1.45rem;
+  color: var(--color-text);
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+.checkboxLabel:hover {
+  opacity: 0.9;
+}
+
+/* Quick Actions Section - Buttons */
+.actionButton {
+  background: transparent;
+  color: var(--color-text);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.actionButton:hover {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+}
+
+.actionButton:active {
+  background-color: var(--color-bg);
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.actionButton i {
+  font-size: 1.45rem;
+}
+
+/* Navigation Section - Links */
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+  background: transparent;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.navLink:hover {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.navLink:active {
+  background-color: var(--color-bg);
+}
+
+.navLink i {
+  font-size: 1.45rem;
+}
+
+.navLink i {
+  font-size: 1.45rem;
+  opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .controlPanel {
+    padding: 14px;
+  }
+  
+  .sectionHeader {
+    font-size: 1.1rem;
+  }
+  
+  .sectionHeader i {
+    font-size: 1.4rem;
+  }
+  
+  .checkboxLabel,
+  .actionButton,
+  .navLink {
+    font-size: 1rem;
+  }
+  
+  .checkboxLabel i,
+  .actionButton i,
+  .navLink i {
+    font-size: 1.4rem;
+  }
+  
+  /* Stack sections on tablet */
+  .topRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .topRow .panelSection {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 12px;
+  }
+  
+  .topRow .panelSection:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .controlPanel {
+    margin-bottom: 12px;
+  }
+}
