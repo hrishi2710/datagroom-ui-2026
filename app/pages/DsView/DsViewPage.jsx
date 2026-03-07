@@ -326,14 +326,14 @@ function DsViewPage() {
         return (
           <span>
             <i className='fas fa-server'></i>&nbsp;<b>Connection Status:&nbsp;</b>{' '}
-            <b style={{ color: 'darkgreen' }}>Connected</b>&nbsp;|
+            <b className="status-connected">Connected</b>&nbsp;|
           </span>
         );
       } else {
         return (
           <span>
             <i className='fas fa-server'></i>&nbsp;<b>Connection Status:&nbsp;</b>{' '}
-            <b style={{ color: 'red' }}>Disconnected</b>{' '}
+            <b className="status-disconnected">Disconnected</b>{' '}
             <i>(Database connectivity is down)</i>&nbsp;|
           </span>
         );
@@ -342,7 +342,7 @@ function DsViewPage() {
       return (
         <span>
           <i className='fas fa-server'></i>&nbsp;<b>Connection Status:&nbsp;</b>{' '}
-          <b style={{ color: 'red' }}>Disconnected</b>
+          <b className="status-disconnected">Disconnected</b>
           <i>(Server connectivity is down)</i>&nbsp;|
         </span>
       );

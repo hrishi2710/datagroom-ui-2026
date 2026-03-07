@@ -106,3 +106,161 @@
   --navbar-height: 56px;
   --border-radius: 8px;
 }
+/* Link colors for default dark theme */
+a {
+  color: #ffa366 !important;
+}
+
+a:hover {
+  color: #ffb84d !important;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #ff99cc !important;
+}
+
+/* Override Bootstrap btn-link to match theme link colors */
+.btn.btn-link,
+button.btn-link,
+a.btn-link {
+  color: #ffa366 !important;
+}
+
+.btn.btn-link:hover,
+.btn.btn-link:focus,
+button.btn-link:hover,
+button.btn-link:focus,
+a.btn-link:hover,
+a.btn-link:focus {
+  color: #ffb84d !important;
+  text-decoration: underline;
+}
+
+/* Link colors for light theme */
+:root.light-theme a {
+  color: #2563eb !important;
+}
+
+:root.light-theme a:hover {
+  color: #1d4ed8 !important;
+  text-decoration: underline;
+}
+
+:root.light-theme a:visited {
+  color: #7c3aed !important;
+}
+
+:root.light-theme .btn.btn-link,
+:root.light-theme button.btn-link,
+:root.light-theme a.btn-link {
+  color: #2563eb !important;
+}
+
+:root.light-theme .btn.btn-link:hover,
+:root.light-theme .btn.btn-link:focus,
+:root.light-theme button.btn-link:hover,
+:root.light-theme button.btn-link:focus,
+:root.light-theme a.btn-link:hover,
+:root.light-theme a.btn-link:focus {
+  color: #1d4ed8 !important;
+  text-decoration: underline;
+}
+
+/* Link colors for gray theme */
+:root.gray-theme a {
+  color: #111111 !important;
+  font-weight: 600;
+}
+
+:root.gray-theme a:hover {
+  color: #000000 !important;
+  text-decoration: underline;
+}
+
+:root.gray-theme a:visited {
+  color: #555555 !important;
+}
+
+:root.gray-theme .btn.btn-link,
+:root.gray-theme button.btn-link,
+:root.gray-theme a.btn-link {
+  color: #111111 !important;
+  font-weight: 600;
+}
+
+:root.gray-theme .btn.btn-link:hover,
+:root.gray-theme .btn.btn-link:focus,
+:root.gray-theme button.btn-link:hover,
+:root.gray-theme button.btn-link:focus,
+:root.gray-theme a.btn-link:hover,
+:root.gray-theme a.btn-link:focus {
+  color: #000000 !important;
+  text-decoration: underline;
+}
+
+/* Link colors for beige theme */
+:root.beige-theme a {
+  color: #b58900 !important;
+}
+
+:root.beige-theme a:hover {
+  color: #936f00 !important;
+  text-decoration: underline;
+}
+
+:root.beige-theme a:visited {
+  color: #9b6b4d !important;
+}
+
+:root.beige-theme .btn.btn-link,
+:root.beige-theme button.btn-link,
+:root.beige-theme a.btn-link {
+  color: #b58900 !important;
+}
+
+:root.beige-theme .btn.btn-link:hover,
+:root.beige-theme .btn.btn-link:focus,
+:root.beige-theme button.btn-link:hover,
+:root.beige-theme button.btn-link:focus,
+:root.beige-theme a.btn-link:hover,
+:root.beige-theme a.btn-link:focus {
+  color: #936f00 !important;
+  text-decoration: underline;
+}
+
+/* Connection status colors for default dark theme */
+.status-connected {
+  color: #4ade80 !important;
+}
+
+.status-disconnected {
+  color: #f87171 !important;
+}
+
+/* Connection status colors for light theme */
+:root.light-theme .status-connected {
+  color: darkgreen !important;
+}
+
+:root.light-theme .status-disconnected {
+  color: #dc2626 !important;
+}
+
+/* Connection status colors for gray theme */
+:root.gray-theme .status-connected {
+  color: #16a34a !important;
+}
+
+:root.gray-theme .status-disconnected {
+  color: #dc2626 !important;
+}
+
+/* Connection status colors for beige theme */
+:root.beige-theme .status-connected {
+  color: #15803d !important;
+}
+
+:root.beige-theme .status-disconnected {
+  color: #b91c1c !important;
+}
