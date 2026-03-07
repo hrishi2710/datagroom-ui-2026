@@ -139,22 +139,22 @@ a.btn-link:focus {
 
 /* Link colors for light theme */
 :root.light-theme a {
-  color: #2563eb !important;
+  color: #5A738E !important;
 }
 
 :root.light-theme a:hover {
-  color: #1d4ed8 !important;
+  color: #4a5f76 !important;
   text-decoration: underline;
 }
 
 :root.light-theme a:visited {
-  color: #7c3aed !important;
+  color: #6b5a8e !important;
 }
 
 :root.light-theme .btn.btn-link,
 :root.light-theme button.btn-link,
 :root.light-theme a.btn-link {
-  color: #2563eb !important;
+  color: #5A738E !important;
 }
 
 :root.light-theme .btn.btn-link:hover,
@@ -163,7 +163,7 @@ a.btn-link:focus {
 :root.light-theme button.btn-link:focus,
 :root.light-theme a.btn-link:hover,
 :root.light-theme a.btn-link:focus {
-  color: #1d4ed8 !important;
+  color: #4a5f76 !important;
   text-decoration: underline;
 }
 

@@ -23,10 +23,10 @@ The application supports four themes:
 - **Rationale:** Uses warm tones that complement the dark theme's existing orange accent color (`--color-accent: #ffb400`). Provides excellent contrast against dark backgrounds without using blue.
 
 ### Light Theme
-- **Default Link:** `#2563eb` (bright blue)
-- **Hover:** `#1d4ed8` (darker blue) + underline
-- **Visited:** `#7c3aed` (purple)
-- **Rationale:** Standard blue link colors work well on light backgrounds, familiar to users.
+- **Default Link:** `#5A738E` (muted slate blue)
+- **Hover:** `#4a5f76` (darker slate) + underline
+- **Visited:** `#6b5a8e` (purple-gray)
+- **Rationale:** Original subdued colors from datagroom.css. Less contrasting and easier on the eyes than bright blue.
 
 ### Gray Theme
 - **Default Link:** `#111111` (very dark charcoal) with `font-weight: 600`
