@@ -15,6 +15,24 @@ export async function fetchDsList(userId) {
   return api(`/ds/dsList/${userId}`, { method: 'GET', headers });
 }
 
+/**
+ * Pin or unpin a dataset for a user.
+ * @param {string} dsName
+ * @param {string} dsUser
+ * @param {boolean} pin  true = pin, false = unpin
+ * @param {string|null} token
+ */
+export async function pinDs(dsName, dsUser, pin, token) {
+  const headers = token
+    ? { authorization: 'Bearer ' + token }
+    : getAuthHeaders();
+  return api('/ds/pinDs', {
+    method: 'POST',
+    body: { dsName, dsUser, pin },
+    headers,
+  });
+}
+
 export async function createDsFromDs(body) {
   const headers = getAuthHeaders();
   try {

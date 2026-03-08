@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styles from './AllDs.module.css';
 import useAllDs from './useAllDs';
 import useDeleteDs from './useDeleteDs';
+import usePinDs from './usePinDs';
 import SearchSortBar from './SearchSortBar';
 import DsList from './DsList';
 import { useAuth } from '../../auth/AuthProvider';
@@ -12,6 +13,7 @@ export default function AllDsPage({ currentUserId }) {
   const userId = currentUserId || auth.userId;
   const { data, isLoading, isError, refetch } = useAllDs(userId);
   const deleteMut = useDeleteDs();
+  const pinMut = usePinDs(userId);
   const navigate = useNavigate();
 
   const [viewMode, setViewMode] = useState(() => localStorage.getItem('allDsViewMode') || 'grid');
@@ -34,8 +36,15 @@ export default function AllDsPage({ currentUserId }) {
     if (sortBy === 'name_desc') out = out.sort((a,b) => (b.name||'').localeCompare(a.name||''));
     if (sortBy === 'size_asc') out = out.sort((a,b) => (a.sizeOnDisk||0) - (b.sizeOnDisk||0));
     if (sortBy === 'size_desc') out = out.sort((a,b) => (b.sizeOnDisk||0) - (a.sizeOnDisk||0));
-    return out;
+    // Float pinned datasets to the top, preserving the user's chosen sort order within each group
+    const pinned = out.filter(d => d.pinned);
+    const unpinned = out.filter(d => !d.pinned);
+    return [...pinned, ...unpinned];
   }, [dbList, searchText, sortBy]);
+
+  function handlePinToggle(dsName, pin) {
+    pinMut.mutate({ dsName, dsUser: userId, pin });
+  }
 
   function handleRequestDelete(dsName) {
     setDeleteConfirm(prev => ({ ...prev, [dsName]: true }));
@@ -116,6 +125,7 @@ export default function AllDsPage({ currentUserId }) {
           deleteConfirm={deleteConfirm}
           currentUserId={userId}
           allInfoExpanded={allInfoExpanded}
+          onPinToggle={handlePinToggle}
         />
       )}
     </div>

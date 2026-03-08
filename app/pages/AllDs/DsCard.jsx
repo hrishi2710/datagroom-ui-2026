@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './AllDs.module.css';
 
-export default function DsCard({ ds, viewMode, onDeleteRequest, onConfirmDelete, isAwaitingConfirm, currentUserId, allInfoExpanded }) {
+export default function DsCard({ ds, viewMode, onDeleteRequest, onConfirmDelete, isAwaitingConfirm, currentUserId, allInfoExpanded, pinned = false, onPinToggle }) {
   const owner = ds?.perms?.owner || null;
   const size = ds?.sizeOnDisk ? `${Math.round(ds.sizeOnDisk / 1024)} KB` : '—';
   const isOwner = owner && currentUserId && String(owner).toLowerCase() === String(currentUserId).toLowerCase();
@@ -26,13 +26,24 @@ export default function DsCard({ ds, viewMode, onDeleteRequest, onConfirmDelete,
           <Link to={`/ds/${encodeURIComponent(ds.name)}/default`} className={styles.cardTitle}>
             {ds.name}
           </Link>
-          <i
-            className={`fa fa-info-circle ${styles.cardInfoIcon} ${expanded ? styles.iconActive : ''}`}
-            onClick={toggleCard}
-            role="button"
-            aria-pressed={expanded}
-            title={expanded ? 'Hide info' : 'Show info'}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            {onPinToggle && (
+              <i
+                className={`fa fa-thumbtack ${pinned ? styles.pinIconActive : styles.pinIcon}`}
+                onClick={() => onPinToggle(ds.name, !pinned)}
+                role="button"
+                aria-pressed={pinned}
+                title={pinned ? 'Unpin from top of list' : 'Pin to top of list'}
+              />
+            )}
+            <i
+              className={`fa fa-info-circle ${styles.cardInfoIcon} ${expanded ? styles.iconActive : ''}`}
+              onClick={toggleCard}
+              role="button"
+              aria-pressed={expanded}
+              title={expanded ? 'Hide info' : 'Show info'}
+            />
+          </div>
         </div>
 
         {expanded ? (
