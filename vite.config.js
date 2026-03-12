@@ -37,7 +37,6 @@ export default defineConfig({
     // In production builds, no proxy exists - requests go directly to backend routes
     // Set VITE_API_BASE= (empty) in .env.production to avoid /api prefix
     proxy: {
-      // PAT routes: preserve /api path (gateway expects /api/pats)
       '/api/pats': {
         target: API_TARGET,
         changeOrigin: true,
@@ -62,21 +61,6 @@ export default defineConfig({
         ws: true,
       },
       '/attachments': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/ds': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/upload': {
-        target: API_TARGET,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/uploadCsv': {
         target: API_TARGET,
         changeOrigin: true,
         secure: false,
