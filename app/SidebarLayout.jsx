@@ -121,10 +121,10 @@ export default function SidebarLayout({ children, onLogout }) {
                   gap: '0.7em'
                 }}
                 onClick={() => navigate('/settings/pats')}
-                title="Personal Access Tokens"
+                title="Tokens"
               >
-                <i className="fa fa-key" aria-hidden="true" style={{ opacity: 0.8 }} />
-                PAT
+                <i className={`fa fa-key ${styles.sidebarHomeIcon}`} aria-hidden="true" />
+                Tokens
               </button>
             </div>
             <div style={{flex:1}} />

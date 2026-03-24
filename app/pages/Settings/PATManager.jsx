@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getPATs, createPAT, deletePAT } from '../../api/client';
 import PATList from './PATList';
-import PATCreateModal from './PATCreateModal';
-import PATDisplayModal from './PATDisplayModal';
-import PATDeleteConfirm from './PATDeleteConfirm';
+import PATCreateForm from './PATCreateModal';
+import PATTokenDisplay from './PATDisplayModal';
 
 export default function PATManager() {
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [newTokenData, setNewTokenData] = useState(null);
   const [tokenToDelete, setTokenToDelete] = useState(null);
 
@@ -31,7 +30,7 @@ export default function PATManager() {
 
   async function handleCreateToken(tokenData) {
     setNewTokenData(tokenData);
-    setShowCreateModal(false);
+    setShowCreateForm(false);
     await fetchTokens();
   }
 
@@ -43,50 +42,54 @@ export default function PATManager() {
       setTokenToDelete(null);
     } catch (err) {
       console.error('Error deleting token:', err);
-      setError('Failed to delete token. Please try again.');
+      setError('Failed to revoke token. Please try again.');
     }
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 1200, margin: 0 }}>
-      <div style={{ marginBottom: 30 }}>
-        <h2 style={{ margin: '0 0 10px', fontSize: 24 }}>Personal Access Tokens</h2>
-        <p style={{ color: '#666', margin: '0 0 20px', lineHeight: 1.5 }}>
-          Personal access tokens (PATs) allow external applications like MCP clients to access your Datagroom datasets.
+    <div style={{ padding: 20, maxWidth: 900, margin: 0 }}>
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: 22, color: 'var(--color-text)' }}>Tokens</h2>
+        <p style={{ color: 'var(--color-text-muted)', margin: '0 0 16px', lineHeight: 1.5, fontSize: 14 }}>
+          Personal access tokens allow external applications to access your Datagroom datasets.
           Tokens inherit your dataset-level and row-level permissions automatically.
         </p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShowCreateModal(true)}
-          disabled={loading}
-        >
-          + Generate New Token
-        </button>
+        {!showCreateForm && (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => { setShowCreateForm(true); setNewTokenData(null); }}
+            disabled={loading}
+          >
+            + Generate New Token
+          </button>
+        )}
       </div>
 
       {error && (
-        <div style={{ padding: 12, background: '#f8d7da', color: '#721c24', borderRadius: 6, marginBottom: 20 }}>
+        <div style={{ padding: 12, background: 'var(--color-danger-bg, #f8d7da)', color: 'var(--color-danger-text, #721c24)', borderRadius: 6, marginBottom: 16, fontSize: 14 }}>
           {error}
-          <button type="button" onClick={() => setError('')} style={{ marginLeft: 12 }}>×</button>
+          <button type="button" onClick={() => setError('')} style={{ marginLeft: 12, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>×</button>
         </div>
       )}
 
-      <PATList tokens={tokens} loading={loading} onDelete={setTokenToDelete} onRefresh={fetchTokens} />
+      {showCreateForm && (
+        <PATCreateForm onClose={() => setShowCreateForm(false)} onCreate={handleCreateToken} />
+      )}
 
-      {showCreateModal && (
-        <PATCreateModal onClose={() => setShowCreateModal(false)} onCreate={handleCreateToken} />
-      )}
       {newTokenData && (
-        <PATDisplayModal tokenData={newTokenData} onClose={() => setNewTokenData(null)} />
+        <PATTokenDisplay tokenData={newTokenData} onClose={() => setNewTokenData(null)} />
       )}
-      {tokenToDelete && (
-        <PATDeleteConfirm
-          token={tokenToDelete}
-          onConfirm={handleDeleteToken}
-          onCancel={() => setTokenToDelete(null)}
-        />
-      )}
+
+      <PATList
+        tokens={tokens}
+        loading={loading}
+        tokenToDelete={tokenToDelete}
+        onDelete={setTokenToDelete}
+        onConfirmDelete={handleDeleteToken}
+        onCancelDelete={() => setTokenToDelete(null)}
+        onRefresh={fetchTokens}
+      />
     </div>
   );
 }

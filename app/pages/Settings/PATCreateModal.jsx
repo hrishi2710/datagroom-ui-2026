@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createPAT } from '../../api/client';
 
-export default function PATCreateModal({ onClose, onCreate }) {
+export default function PATCreateForm({ onClose, onCreate }) {
   const [formData, setFormData] = useState({ name: '', expiresInDays: 365 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -30,75 +30,99 @@ export default function PATCreateModal({ onClose, onCreate }) {
     }
   }
 
-  function handleBackgroundClick(e) {
-    if (e.target === e.currentTarget) onClose();
-  }
-
   return (
-    <div className="modal-overlay" onClick={handleBackgroundClick} style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050,
+    <div style={{
+      background: 'var(--color-bg)',
+      border: '1px solid var(--color-border)',
+      borderLeft: '3px solid var(--color-primary)',
+      borderRadius: 8,
+      marginBottom: 20,
+      overflow: 'hidden',
     }}>
-      <div className="modal-content" style={{
-        background: 'var(--color-bg, #fff)', borderRadius: 12, boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-        maxWidth: 600, width: '100%', maxHeight: '90vh', overflowY: 'auto',
+      <div style={{
+        padding: '14px 20px',
+        borderBottom: '1px solid var(--color-border)',
+        background: 'var(--color-bg-light)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
       }}>
-        <div style={{ padding: 24, borderBottom: '1px solid var(--color-border, #e9ecef)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>Generate New Token</h3>
-          <button type="button" onClick={onClose} disabled={loading} style={{ background: 'none', border: 'none', fontSize: 28, cursor: 'pointer' }}>×</button>
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div style={{ padding: 24 }}>
-            <div style={{ marginBottom: 20 }}>
-              <label htmlFor="pat-name" style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>Token Name <span style={{ color: '#dc3545' }}>*</span></label>
-              <input
-                id="pat-name"
-                type="text"
-                className="form-control"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g., Cursor IDE, MCP Client"
-                maxLength={100}
-                required
-                disabled={loading}
-                autoFocus
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #ced4da)', borderRadius: 6 }}
-              />
-              <small style={{ display: 'block', marginTop: 6, color: '#6c757d' }}>A descriptive name to help you identify this token later</small>
-            </div>
-            <div style={{ marginBottom: 20, padding: 12, background: 'var(--color-bg-muted, #f8f9fa)', borderRadius: 8 }}>
-              <p style={{ margin: 0, fontSize: 14 }}>
-                This token will grant access to <strong>all datasets you have permission to</strong> (your ACL). Use it in MCP to query any of your datasets.
-              </p>
-            </div>
-            <div style={{ marginBottom: 20 }}>
-              <label htmlFor="pat-expiry" style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>Token Expiration</label>
-              <select
-                id="pat-expiry"
-                value={formData.expiresInDays}
-                onChange={(e) => setFormData({ ...formData, expiresInDays: parseInt(e.target.value, 10) })}
-                disabled={loading}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--color-border, #ced4da)', borderRadius: 6 }}
-              >
-                <option value={30}>30 days</option>
-                <option value={90}>90 days</option>
-                <option value={365}>1 year (recommended)</option>
-                <option value={0}>Never (not recommended)</option>
-              </select>
-              <small style={{ display: 'block', marginTop: 6, color: '#6c757d' }}>Tokens should expire for security reasons</small>
-            </div>
-            {error && (
-              <div style={{ padding: 12, background: '#f8d7da', color: '#721c24', borderRadius: 6, marginBottom: 20 }}>{error}</div>
-            )}
-          </div>
-          <div style={{ padding: '20px 24px', borderTop: '1px solid var(--color-border, #e9ecef)', display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Generating...' : 'Generate Token'}
-            </button>
-          </div>
-        </form>
+        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: 'var(--color-text)' }}>
+          Generate New Token
+        </h4>
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={loading}
+          style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: 'var(--color-text-muted)', lineHeight: 1 }}
+        >
+          ×
+        </button>
       </div>
+      <form onSubmit={handleSubmit}>
+        <div style={{ padding: 20 }}>
+          <div style={{ marginBottom: 16 }}>
+            <label htmlFor="pat-name" style={{ display: 'block', marginBottom: 6, fontWeight: 500, fontSize: 14, color: 'var(--color-text)' }}>
+              Token Name <span style={{ color: 'var(--color-danger, #dc3545)' }}>*</span>
+            </label>
+            <input
+              id="pat-name"
+              type="text"
+              className="form-control"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="e.g., My API Token"
+              maxLength={100}
+              required
+              disabled={loading}
+              autoFocus
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+            />
+            <small style={{ display: 'block', marginTop: 4, color: 'var(--color-text-muted)' }}>
+              A descriptive name to help you identify this token later
+            </small>
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <label htmlFor="pat-expiry" style={{ display: 'block', marginBottom: 6, fontWeight: 500, fontSize: 14, color: 'var(--color-text)' }}>
+              Token Expiration
+            </label>
+            <select
+              id="pat-expiry"
+              value={formData.expiresInDays}
+              onChange={(e) => setFormData({ ...formData, expiresInDays: parseInt(e.target.value, 10) })}
+              disabled={loading}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6, background: 'var(--color-bg)' }}
+            >
+              <option value={30}>30 days</option>
+              <option value={90}>90 days</option>
+              <option value={365}>1 year (recommended)</option>
+              <option value={0}>Never (not recommended)</option>
+            </select>
+            <small style={{ display: 'block', marginTop: 4, color: 'var(--color-text-muted)' }}>
+              Tokens should expire for security reasons
+            </small>
+          </div>
+          {error && (
+            <div style={{ padding: 10, background: 'var(--color-danger-bg, #f8d7da)', color: 'var(--color-danger-text, #721c24)', borderRadius: 6, marginBottom: 12, fontSize: 14 }}>
+              {error}
+            </div>
+          )}
+        </div>
+        <div style={{
+          padding: '12px 20px',
+          borderTop: '1px solid var(--color-border)',
+          display: 'flex',
+          gap: 10,
+          justifyContent: 'flex-end',
+        }}>
+          <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Generating...' : 'Generate Token'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
