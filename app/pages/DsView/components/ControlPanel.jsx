@@ -42,6 +42,21 @@ function ControlPanel({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const hoverTimeoutRef = useRef(null);
+  
+  // Pin state with localStorage persistence
+  const [isPinned, setIsPinned] = useState(() => {
+    try {
+      const saved = localStorage.getItem('controlPanelPinned');
+      return saved !== null ? JSON.parse(saved) : false;
+    } catch (e) {
+      return false;
+    }
+  });
+
+  // Persist pin state to localStorage
+  useEffect(() => {
+    localStorage.setItem('controlPanelPinned', JSON.stringify(isPinned));
+  }, [isPinned]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -69,8 +84,14 @@ function ControlPanel({
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
-    // Collapse immediately
-    setIsExpanded(false);
+    // Only collapse if not pinned
+    if (!isPinned) {
+      setIsExpanded(false);
+    }
+  };
+
+  const handlePinToggle = () => {
+    setIsPinned(!isPinned);
   };
 
   return (
@@ -79,6 +100,17 @@ function ControlPanel({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Panel Header with Pin Button */}
+      <div className={styles.panelHeader}>
+        <i
+          className={`fa fa-thumbtack ${isPinned ? styles.pinButtonActive : styles.pinButton}`}
+          onClick={handlePinToggle}
+          role="button"
+          aria-pressed={isPinned}
+          title={isPinned ? 'Unpin panel (auto-collapse on hover out)' : 'Pin panel (keep expanded)'}
+        />
+      </div>
+
       {/* Top Row: Settings, Quick Actions, and Navigation side-by-side */}
       <div className={styles.topRow}>
         {/* Settings Section */}
