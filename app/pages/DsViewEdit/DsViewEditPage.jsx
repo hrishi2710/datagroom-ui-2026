@@ -96,40 +96,41 @@ function DsViewEditPage() {
     };
   }, []);
 
+  // Load column definitions from server
+  const loadColumns = async () => {
+    try {
+      const response = await fetch(`${API_URL}/ds/view/columns/${dsName}/${dsView}/${userId}`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load columns: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setViewData(data);
+      
+      // Initialize editors map
+      if (data.columnAttrs) {
+        const editors = {};
+        data.columnAttrs.forEach(col => {
+          editors[col.field] = col.editor;
+        });
+        editorsRef.current = editors;
+      }
+      
+      setDataLoaded(true);
+    } catch (error) {
+      console.error('Error loading columns:', error);
+      setSetViewStatus(`Error loading columns: ${error.message}`);
+    }
+  };
+
   // Load column definitions on mount
   useEffect(() => {
-    const loadColumns = async () => {
-      try {
-        const response = await fetch(`${API_URL}/ds/view/columns/${dsName}/${dsView}/${userId}`, {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Failed to load columns: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        setViewData(data);
-        
-        // Initialize editors map
-        if (data.columnAttrs) {
-          const editors = {};
-          data.columnAttrs.forEach(col => {
-            editors[col.field] = col.editor;
-          });
-          editorsRef.current = editors;
-        }
-        
-        setDataLoaded(true);
-      } catch (error) {
-        console.error('Error loading columns:', error);
-        setSetViewStatus(`Error loading columns: ${error.message}`);
-      }
-    };
-
     loadColumns();
   }, [dsName, dsView, userId]);
 
@@ -704,17 +705,8 @@ function DsViewEditPage() {
           setSetViewStatus('');
         }, 2000);
 
-        // Update widths in tabulator
-        for (let j = 0; j < filteredDefs.length; j++) {
-          const cols = tabulatorRef.current.table.getColumns();
-          for (let i = 0; i < cols.length; i++) {
-            if (filteredDefs[j].field === cols[i].getField()) {
-              const width = cols[i].getWidth();
-              tabulatorRef.current.table.updateColumnDefinition(filteredDefs[j].field, { width });
-              break;
-            }
-          }
-        }
+        // Reload view data from server to get updated column definitions
+        await loadColumns();
       } else {
         setSetViewStatus(result.message || 'Failed to save view definitions');
       }
