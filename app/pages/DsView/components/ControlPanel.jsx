@@ -40,9 +40,6 @@ function ControlPanel({
   // View config for Jira check
   viewConfig,
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const hoverTimeoutRef = useRef(null);
-  
   // Pin state with localStorage persistence
   const [isPinned, setIsPinned] = useState(() => {
     try {
@@ -52,6 +49,18 @@ function ControlPanel({
       return false;
     }
   });
+  
+  // Initialize isExpanded based on pin state
+  const [isExpanded, setIsExpanded] = useState(() => {
+    try {
+      const saved = localStorage.getItem('controlPanelPinned');
+      return saved !== null ? JSON.parse(saved) : false;
+    } catch (e) {
+      return false;
+    }
+  });
+  
+  const hoverTimeoutRef = useRef(null);
 
   // Persist pin state to localStorage
   useEffect(() => {
