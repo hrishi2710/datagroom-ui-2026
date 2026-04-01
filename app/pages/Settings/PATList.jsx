@@ -16,14 +16,25 @@ function formatDate(dateString) {
 
 function formatExpiry(expiresAt, isExpired) {
   if (!expiresAt) return <span style={{ color: 'var(--color-success, #28a745)', fontWeight: 500 }}>Never</span>;
-  if (isExpired) return <span style={{ color: 'var(--color-danger, #dc3545)', fontWeight: 600 }}>Expired</span>;
+  
   const date = new Date(expiresAt);
   const now = new Date();
   const diffMs = date - now;
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays < 7) return <span style={{ color: 'var(--color-danger, #dc3545)', fontWeight: 600 }}>In {diffDays} days</span>;
-  if (diffDays < 30) return <span style={{ color: 'var(--color-warning, #ffc107)', fontWeight: 500 }}>In {Math.ceil(diffDays / 7)} weeks</span>;
-  return <span style={{ color: 'var(--color-success, #28a745)' }}>{formatDate(expiresAt)}</span>;
+  
+  // Check if token is actually expired (either by flag or by date)
+  if (isExpired || diffDays < 0) {
+    return <span style={{ color: 'var(--color-danger, #dc3545)', fontWeight: 600 }}>Expired</span>;
+  }
+  
+  // Show days remaining with color based on urgency
+  if (diffDays < 7) {
+    return <span style={{ color: 'var(--color-danger, #dc3545)', fontWeight: 600 }}>In {diffDays} days</span>;
+  }
+  if (diffDays < 30) {
+    return <span style={{ color: 'var(--color-warning, #ffc107)', fontWeight: 500 }}>In {diffDays} days</span>;
+  }
+  return <span style={{ color: 'var(--color-success, #28a745)' }}>In {diffDays} days</span>;
 }
 
 export default function PATList({ tokens, loading, onDelete, onConfirmDelete, onCancelDelete, tokenToDelete, onRefresh }) {
@@ -73,9 +84,19 @@ export default function PATList({ tokens, loading, onDelete, onConfirmDelete, on
         </h3>
         <button
           type="button"
-          className="btn btn-secondary"
           onClick={onRefresh}
-          style={{ padding: '4px 12px', fontSize: 13 }}
+          style={{
+            padding: '4px 12px',
+            fontSize: 13,
+            background: 'var(--color-bg)',
+            color: 'var(--color-text)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--border-radius, 4px)',
+            cursor: 'pointer',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={(e) => e.target.style.background = 'var(--color-bg-light)'}
+          onMouseLeave={(e) => e.target.style.background = 'var(--color-bg)'}
         >
           ↻ Refresh
         </button>
