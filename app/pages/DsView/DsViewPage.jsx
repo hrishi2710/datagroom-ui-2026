@@ -555,7 +555,7 @@ function DsViewPage() {
               }
             }
             // Show all columns and restore widths
-            applyFilterColumnAttrs(tabulatorRef.current, {}, columnResizedRecentlyRef.current, originalColumnAttrsRef.current);
+            applyFilterColumnAttrs(tabulatorRef.current, {}, columnResizedRecentlyRef.current, originalColumnAttrsRef.current, viewConfig);
             // Clear sorters
             try { if (typeof tabulatorRef.current.table.clearSort === 'function') tabulatorRef.current.table.clearSort(); } catch (e) {}
           });
@@ -763,7 +763,7 @@ function DsViewPage() {
                 }
               }
 
-              applyFilterColumnAttrs(tabulatorRef.current, colAttrs, columnResizedRecentlyRef.current, originalColumnAttrsRef.current);
+              applyFilterColumnAttrs(tabulatorRef.current, colAttrs, columnResizedRecentlyRef.current, originalColumnAttrsRef.current, viewConfig);
 
               if (Array.isArray(hdrFilters) && hdrFilters.length) {
                 for (let i = 0; i < hdrFilters.length; i++) {
@@ -884,7 +884,7 @@ function DsViewPage() {
                     }
 
                     // Apply column visibility/width attrs (pass original attrs so widths can be restored when needed)
-                    applyFilterColumnAttrs(tabulatorRef.current, colAttrs, columnResizedRecentlyRef.current, originalColumnAttrsRef.current);
+                    applyFilterColumnAttrs(tabulatorRef.current, colAttrs, columnResizedRecentlyRef.current, originalColumnAttrsRef.current, viewConfig);
 
                     // Now apply saved header filter values so Tabulator (and backend) perform filtering
                     if (Array.isArray(hdrFilters) && hdrFilters.length) {
@@ -948,7 +948,7 @@ function DsViewPage() {
                 }
               }
               // Apply empty attrs to show all columns and restore original widths
-              applyFilterColumnAttrs(tabulatorRef.current, {}, columnResizedRecentlyRef.current, originalColumnAttrsRef.current);
+              applyFilterColumnAttrs(tabulatorRef.current, {}, columnResizedRecentlyRef.current, originalColumnAttrsRef.current, viewConfig);
               // Clear sorters when filter cleared
               try {
                 if (typeof tabulatorRef.current.table.clearSort === 'function') {
@@ -1664,6 +1664,34 @@ function DsViewPage() {
       // This functionality is handled by the useDatasetSocket hook on mount
     }
 
+    // Enforce backend column visibility (visible: false) when no filters are active
+    // This runs after table renders to ensure Tabulator has initialized columns
+    try {
+      const table = tabulatorRef.current?.table;
+      if (table && viewConfig?.columnAttrs) {
+        // Only enforce when NO filter is active (filters manage their own visibility)
+        const hasFilters = (filterColumnAttrs && Object.keys(filterColumnAttrs).length > 0) || filter || searchParams.toString();
+        
+        if (!hasFilters) {
+          const cols = table.getColumns();
+          for (let i = 0; i < viewConfig.columnAttrs.length; i++) {
+            const backendCol = viewConfig.columnAttrs[i];
+            if (backendCol.visible === false) {
+              // Find matching column and hide it
+              for (let j = 0; j < cols.length; j++) {
+                if (cols[j].getField() === backendCol.field && cols[j].isVisible()) {
+                  console.log('[VISIBILITY] Hiding column in renderComplete:', backendCol.field);
+                  cols[j].hide();
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('[VISIBILITY] Error enforcing column visibility in renderComplete:', e);
+    }
+
     // Normalize image rows for proper rendering
     if (domHelpers.current) {
       domHelpers.current.normalizeAllImgRows();
@@ -1676,7 +1704,7 @@ function DsViewPage() {
     // Re-run mermaid to render any mermaid diagrams in the table
     // Use double requestAnimationFrame to ensure DOM is fully updated
     requestAnimationFrame(() => requestAnimationFrame(() => renderMermaidDiagrams()));
-  }, [dsName, emitLock]);
+  }, [dsName, emitLock, viewConfig, filterColumnAttrs, filter, searchParams]);
 
   // Page loaded handler - called when pagination changes
   const handlePageLoaded = useCallback((pageno) => {

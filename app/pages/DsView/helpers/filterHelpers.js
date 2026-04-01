@@ -15,9 +15,11 @@
  * @param {Object} tabulatorRef - React ref to MyTabulator component
  * @param {Object} filterColumnAttrs - Column attributes from saved filter {field: {hidden: bool, width: number}}
  * @param {boolean} columnResizedRecently - Flag to skip width setting if column was manually resized
+ * @param {Object} originalColumnAttrs - Original column attributes from backend (array or object)
+ * @param {Object} viewConfig - View configuration from backend (optional, for checking backend visibility)
  * Reference: DsView.js lines 2039-2073
  */
-export function applyFilterColumnAttrs(tabulatorRef, filterColumnAttrs, columnResizedRecently, originalColumnAttrs) {
+export function applyFilterColumnAttrs(tabulatorRef, filterColumnAttrs, columnResizedRecently, originalColumnAttrs, viewConfig) {
   if (!tabulatorRef?.table) return;
   
   const cols = tabulatorRef.table.getColumns();
@@ -40,12 +42,31 @@ export function applyFilterColumnAttrs(tabulatorRef, filterColumnAttrs, columnRe
     return undefined;
   }
   
-  // If filterColumnAttrs is empty, show all columns
+  // Helper to check if column should be visible per backend config
+  function shouldBeVisiblePerBackend(field) {
+    if (!viewConfig?.columnAttrs) return true; // default to visible if no config
+    for (let i = 0; i < viewConfig.columnAttrs.length; i++) {
+      const backendCol = viewConfig.columnAttrs[i];
+      if (backendCol.field === field) {
+        // Backend uses 'visible' attribute: visible: false means hide
+        return backendCol.visible !== false;
+      }
+    }
+    return true; // default to visible if not found
+  }
+  
+  // If filterColumnAttrs is empty, restore to backend's original visibility state
   if (!filterColumnAttrs || Object.keys(filterColumnAttrs).length === 0) {
     for (let i = 0; i < cols.length; i++) {
       const field = cols[i].getField();
-      if (!cols[i].isVisible()) {
+      const shouldBeVisible = shouldBeVisiblePerBackend(field);
+      
+      // Only show column if backend says it should be visible
+      if (!cols[i].isVisible() && shouldBeVisible) {
         cols[i].show();
+      } else if (cols[i].isVisible() && !shouldBeVisible) {
+        // Keep column hidden if backend marks it as visible: false
+        cols[i].hide();
       }
 
       // Restore original width if provided and column wasn't manually resized
