@@ -113,6 +113,21 @@ function getAuthHeaders() {
   return {};
 }
 
+// PAT (Personal Access Token) API for MCP integration
+export async function getPATs() {
+  return rawFetch('/api/pats', { method: 'GET', headers: getAuthHeaders() });
+}
+export async function createPAT({ name, expiresInDays }) {
+  return rawFetch('/api/pats/generate', {
+    method: 'POST',
+    body: { name, expiresInDays },
+    headers: getAuthHeaders(),
+  });
+}
+export async function deletePAT(tokenId) {
+  return rawFetch(`/api/pats/${tokenId}`, { method: 'DELETE', headers: getAuthHeaders() });
+}
+
 export async function getAllUsers() { return rawFetch('/users', { method: 'GET' }); }
 export async function getUserById(id) { return rawFetch(`/users/${id}`, { method: 'GET' }); }
 export async function registerUser(user) { return rawFetch('/users/register', { method: 'POST', body: user }); }

@@ -37,6 +37,11 @@ export default defineConfig({
     // In production builds, no proxy exists - requests go directly to backend routes
     // Set VITE_API_BASE= (empty) in .env.production to avoid /api prefix
     proxy: {
+      '/api/pats': {
+        target: API_TARGET,
+        changeOrigin: true,
+        secure: false,
+      },
       '/api': {
         target: API_TARGET,
         changeOrigin: true,

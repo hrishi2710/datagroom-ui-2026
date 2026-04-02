@@ -1,6 +1,7 @@
  :root.gray-theme {
   --color-bg: #cccccc;
   --color-bg-light: #e0e0e0;
+  --color-bg-muted: #d4d4d4;
   --color-sidebar: #d6d6d6;
   --color-sidebar-active: #b0b0b0;
   --color-primary: #333333;
@@ -24,6 +25,7 @@
 :root.beige-theme {
   --color-bg: #fdf6e3;
   --color-bg-light: #fffbe6;
+  --color-bg-muted: #f5edcc;
   --color-sidebar: #f7ecd0;
   --color-sidebar-active: #f3e3b3;
   --color-primary: #b58900;
@@ -60,6 +62,7 @@
   /* Color palette */
   --color-bg: #181a1b;
   --color-bg-light: #23272a;
+  --color-bg-muted: #23272a;
   --color-sidebar: #23272a;
   --color-sidebar-active: #31363b;
   --color-primary: #4f8cff;
@@ -86,6 +89,7 @@
 :root.light-theme {
   --color-bg: #f7f8fa;
   --color-bg-light: #ffffff;
+  --color-bg-muted: #f0f2f5;
   --color-sidebar: #f4f6fb;
   --color-sidebar-active: #e9eef6;
   --color-primary: #494a4c;

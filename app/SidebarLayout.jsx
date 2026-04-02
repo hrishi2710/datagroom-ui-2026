@@ -120,6 +120,29 @@ export default function SidebarLayout({ children, onLogout }) {
                   alignItems: 'center',
                   gap: '0.7em'
                 }}
+                onClick={() => navigate('/settings/pats')}
+                title="Tokens"
+              >
+                <i className={`fa fa-key ${styles.sidebarHomeIcon}`} aria-hidden="true" />
+                Tokens
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-light"
+                style={{
+                  textAlign: 'left',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-text-muted)',
+                  fontWeight: 500,
+                  fontSize: '1rem',
+                  borderRadius: 'var(--border-radius)',
+                  padding: '0.5rem 0.7rem',
+                  transition: 'background 0.15s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.7em'
+                }}
                 onClick={() => {
                   const base = import.meta.env.VITE_API_BASE || '';
                   window.open(`${base}/api-docs`, '_blank', 'noopener');

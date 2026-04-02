@@ -14,6 +14,7 @@ import DsEditLogPage from './pages/DsEditLog/DsEditLogPage';
 import DsViewEditPage from './pages/DsViewEdit/DsViewEditPage';
 import DsAttachmentsPage from './pages/DsAttachments/DsAttachmentsPage';
 import DsBulkEditPage from './pages/DsBulkEdit/DsBulkEditPage';
+import PATManager from './pages/Settings/PATManager';
 import SidebarLayout from './SidebarLayout';
 import { useAuth } from './auth/AuthProvider';
 
@@ -23,6 +24,17 @@ function DsViewWithLayout() {
         <SidebarLayout onLogout={() => { auth.logout(); window.location.href = '/login'; }}>
             <div style={{ position: 'relative', width: '100%', margin: '0 auto', padding: '0 20px' }}>
                 <DsViewPage currentUserId={auth.userId} />
+            </div>
+        </SidebarLayout>
+    );
+}
+
+function PATManagerWithLayout() {
+    const auth = useAuth();
+    return (
+        <SidebarLayout onLogout={() => { auth.logout(); window.location.href = '/login'; }}>
+            <div style={{ position: 'relative', width: '100%', margin: '0 auto', padding: '0 20px' }}>
+                <PATManager />
             </div>
         </SidebarLayout>
     );
@@ -64,6 +76,7 @@ export function AppRoutes() {
             <Route path="/ds/new-from-ds" element={<RequireAuth><NewDsFromDsPage /></RequireAuth>} />
             <Route path="/ds/new-from-xls" element={<RequireAuth><NewDsFromXlsPage /></RequireAuth>} />
             <Route path="/ds/new-from-csv" element={<RequireAuth><NewDsFromCsvPage /></RequireAuth>} />
+            <Route path="/settings/pats" element={<RequireAuth><PATManagerWithLayout /></RequireAuth>} />
         </Routes>
     );
 }
