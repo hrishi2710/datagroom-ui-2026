@@ -1948,8 +1948,15 @@ function DsViewPage() {
 
     // Call API to save edit
     // Match reference implementation payload shape
-    // Reference: DsView.js lines 1172-1183
-    const selectorObj = { _id, [field]: oldVal };
+    // Reference: DsView.js lines 1170-1176 — selector must include _id, all key fields from row
+    // data, then the edited column set to oldVal (optimistic match / key-edit transaction).
+    const selectorObj = { _id };
+    const keys = viewConfig?.keys || [];
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      selectorObj[key] = rowData[key];
+    }
+    selectorObj[field] = oldVal;
     const editObj = { [field]: newVal };
     const jiraConfig = viewConfig?.jiraConfig;
     const jiraAgileConfig = viewConfig?.jiraAgileConfig;
