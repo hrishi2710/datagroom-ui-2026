@@ -58,7 +58,34 @@
     - You can add more variables as needed for new theme options.
 */
 
+/*
+  Native selects: browsers often paint dropdown lists with a light surface while
+  inheriting page text color, which breaks dark mode. color-scheme + explicit
+  select/option colors keeps the closed control and list legible in every theme.
+*/
+:root.light-theme,
+:root.gray-theme,
+:root.beige-theme {
+  color-scheme: light;
+}
+
+select {
+  padding: 6px 8px;
+  font: inherit;
+  border-radius: calc(var(--border-radius, 8px) - 2px);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-light);
+  color: var(--color-text);
+}
+
+option,
+optgroup {
+  background-color: var(--color-bg-light);
+  color: var(--color-text);
+}
+
 :root {
+  color-scheme: dark;
   /* Color palette */
   --color-bg: #181a1b;
   --color-bg-light: #23272a;
